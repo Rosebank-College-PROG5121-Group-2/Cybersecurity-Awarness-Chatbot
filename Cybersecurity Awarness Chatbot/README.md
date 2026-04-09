@@ -28,3 +28,4 @@ Chatbot.cs: The "Engine." Contains the conversational loop, keyword detection lo
 User.cs: Handles user profile data and identity persistence.
 
 AudioPlayer.cs: Manages multimedia assets and error handling for audio playback.
+Updated the Cyber Shield logo, some letters werent descriptive 
