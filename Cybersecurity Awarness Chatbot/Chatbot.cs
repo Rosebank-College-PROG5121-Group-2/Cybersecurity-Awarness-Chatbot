@@ -2,30 +2,97 @@
 
 namespace CybersecurityChatbot
 {
-    // Class containing the security advice database and UI styling
     public class Chatbot
     {
-        // Displays the 10-point security menu with color coding
-        public void ShowSecurityMenu()
+        // MAIN CONVERSATIONAL LOOP
+        public void StartConversation(User user)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\n--- CYBERSECURITY COMMAND CENTER ---");
-            Console.WriteLine("1.  Password Security");
-            Console.WriteLine("2.  Phishing Awareness");
-            Console.WriteLine("3.  Two-Factor Authentication (2FA)");
-            Console.WriteLine("4.  Public Wi-Fi Safety");
-            Console.WriteLine("5.  Software Updates");
-            Console.WriteLine("6.  Social Engineering");
-            Console.WriteLine("7.  Malware & Viruses");
-            Console.WriteLine("8.  Mobile Device Security");
-            Console.WriteLine("9.  Data Backups");
-            Console.WriteLine("10. Reporting a Breach");
-            Console.WriteLine("0.  Exit System");
-            Console.ResetColor();
-            Console.Write("\nSelect a security topic (0-10): ");
+            bool keepRunning = true;
+
+            while (keepRunning)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("\nYou: ");
+                Console.ResetColor();
+
+                // .Trim() removes accidental spaces that cause "Invalid Selection" errors
+                string input = Console.ReadLine()?.ToLower().Trim();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    Console.WriteLine("Please enter something so I can assist you.");
+                    continue;
+                }
+
+                // 1. HELP / MENU COMMAND
+                if (input.Contains("menu") || input.Contains("options") || input.Contains("help") || input.Contains("show"))
+                {
+                    Console.WriteLine($"\nCertainly {user.Name}, here is the Cybersecurity Command Center menu:");
+                    ShowSecurityMenu();
+                }
+
+                // 2. KEYWORD DETECTION (Priority logic)
+                else if (input.Contains("phishing"))
+                {
+                    GiveAdvice("2");
+                }
+                else if (input.Contains("password"))
+                {
+                    GiveAdvice("1");
+                }
+                else if (input.Contains("2fa") || input.Contains("authentication"))
+                {
+                    GiveAdvice("3");
+                }
+                else if (input.Contains("wifi") || input.Contains("wi-fi"))
+                {
+                    GiveAdvice("4");
+                }
+                else if (input.Contains("update"))
+                {
+                    GiveAdvice("5");
+                }
+
+                // 3. GREETINGS & PERSONALITY
+                else if (input.Contains("hello") || input.Contains("hi"))
+                {
+                    Console.WriteLine($"Hello {user.Name}! How can I help you today?");
+                }
+                else if (input.Contains("how are you"))
+                {
+                    Console.WriteLine($"I'm doing great, {user.Name}! Ready to help you stay safe online.");
+                }
+
+                // 4. NUMBER SUPPORT (Handles "7", "8", "9" etc.)
+                else if (int.TryParse(input, out int choice))
+                {
+                    if (choice == 0)
+                    {
+                        Console.WriteLine($"Goodbye {user.Name}! Stay safe.");
+                        keepRunning = false;
+                    }
+                    else
+                    {
+                        GiveAdvice(input);
+                    }
+                }
+
+                // 5. EXIT COMMANDS
+                else if (input.Contains("bye") || input.Contains("exit"))
+                {
+                    Console.WriteLine($"Goodbye {user.Name}! Stay safe.");
+                    keepRunning = false;
+                }
+
+                // 6. FALLBACK
+                else
+                {
+                    Console.WriteLine("I didn't quite catch that. Type 'menu' to see my topics, or ask about 'passwords'.");
+                }
+            }
         }
 
-        // Uses a Switch Statement to provide advice based on user input
+        // DATABASE OF ADVICE
         public void GiveAdvice(string choice)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -43,13 +110,28 @@ namespace CybersecurityChatbot
                 case "8": Console.WriteLine("Advice: Set up remote wipe capabilities for lost devices."); break;
                 case "9": Console.WriteLine("Advice: Use the 3-2-1 rule: 3 copies, 2 media, 1 offsite."); break;
                 case "10": Console.WriteLine("Advice: Disconnect and change all passwords immediately."); break;
-                default: Console.WriteLine("Invalid selection. Please choose a valid protocol (0-10)."); break;
+                default: Console.WriteLine("Invalid selection. Please choose a topic between 1 and 10."); break;
             }
             Console.ResetColor();
         }
+
+        // UI ELEMENTS
+        public void ShowSecurityMenu()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n--- CYBERSECURITY COMMAND CENTER ---");
+            Console.WriteLine("1.  Password Security      6.  Social Engineering");
+            Console.WriteLine("2.  Phishing Awareness     7.  Malware & Viruses");
+            Console.WriteLine("3.  2FA Setup              8.  Mobile Security");
+            Console.WriteLine("4.  Public Wi-Fi           9.  Data Backups");
+            Console.WriteLine("5.  Software Updates       10. Reporting a Breach");
+            Console.WriteLine("0.  Exit System");
+            Console.ResetColor();
+        }
+
         public void DisplayLogo()
         {
-            Console.Clear(); // Clears previous text so the logo is always at the top
+            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(@"
     =================================================
@@ -66,6 +148,4 @@ namespace CybersecurityChatbot
             Console.ResetColor();
         }
     }
-
 }
-//
