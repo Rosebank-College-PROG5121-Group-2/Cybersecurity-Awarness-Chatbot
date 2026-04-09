@@ -12,9 +12,7 @@ Defensive Programming: Implements input validation and string sanitization (.Tri
 Personalized Experience: Captures and stores user data to address the user by name throughout the session.
 
  Technical Stack
-Language: C# (.NET 8.0/10.0)
-
-IDE: Visual Studio 2022
+Language: C# 
 
 Version Control: Git & GitHub
 
