@@ -24,14 +24,14 @@ namespace CybersecurityChatbot
                     continue;
                 }
 
-                // 1. HELP / MENU COMMAND
+                //  HELP / MENU COMMAND
                 if (input.Contains("menu") || input.Contains("options") || input.Contains("help") || input.Contains("show"))
                 {
                     Console.WriteLine($"\nCertainly {user.Name}, here is the Cybersecurity Command Center menu:");
                     ShowSecurityMenu();
                 }
 
-                // 2. KEYWORD DETECTION (Priority logic)
+                //  KEYWORD DETECTION (Priority logic)
                 else if (input.Contains("phishing"))
                 {
                     GiveAdvice("2");
@@ -53,7 +53,7 @@ namespace CybersecurityChatbot
                     GiveAdvice("5");
                 }
 
-                // 3. GREETINGS & PERSONALITY
+                //  GREETINGS & PERSONALITY
                 else if (input.Contains("hello") || input.Contains("hi"))
                 {
                     Console.WriteLine($"Hello {user.Name}! How can I help you today?");
@@ -63,7 +63,7 @@ namespace CybersecurityChatbot
                     Console.WriteLine($"I'm doing great, {user.Name}! Ready to help you stay safe online.");
                 }
 
-                // 4. NUMBER SUPPORT (Handles "7", "8", "9" etc.)
+                //  NUMBER SUPPORT (Handles "7", "8", "9" etc.)
                 else if (int.TryParse(input, out int choice))
                 {
                     if (choice == 0)
@@ -77,7 +77,7 @@ namespace CybersecurityChatbot
                     }
                 }
 
-                // 5. EXIT COMMANDS
+                //  EXIT COMMANDS
                 else if (input.Contains("bye") || input.Contains("exit"))
                 {
                     Console.WriteLine($"Goodbye {user.Name}! Stay safe.");
