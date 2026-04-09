@@ -2,51 +2,32 @@
 
 namespace CybersecurityChatbot
 {
-    // The main execution class for the Cybersecurity Awareness Chatbot
     class Program
     {
         static void Main(string[] args)
         {
-            // Initializing class objects to handle specific tasks (Modular Design)
+            // Initializing class objects (Modular Design)
             AudioPlayer audio = new AudioPlayer();
             User user = new User();
             Chatbot bot = new Chatbot();
 
-            // STEP 1: Execute multimedia greeting
+            //  Execute multimedia greeting
             audio.PlayWelcomeMessage();
 
-            // STEP 2: Handle User Authentication and data storage
+            //  Handle User Authentication (Capture Name)
             user.GetUserName();
 
-            bool keepRunning = true;
+            //  Display the UI Logo
+            bot.DisplayLogo();
 
-            // MAIN LOOP: Keeps the application active for multiple queries
-            while (keepRunning)
-            {
-                // Call the logo first so it appears above the menu
-                bot.DisplayLogo();
+            //  Hand over control to the Chatbot's conversational loop
+            // We pass the 'user' and 'bot' objects so it can use names and advice logic
+            Console.WriteLine($"\n[SYSTEM] Connection established. You can now chat with the bot, {user.Name}!");
+            bot.StartConversation(user);
 
-                // Then show the 10 options
-                bot.ShowSecurityMenu();
-
-                string input = Console.ReadLine();
-
-                // Logical check for system exit (Choice 0)
-                if (input == "0")
-                {
-                    keepRunning = false;
-                    Console.WriteLine($"\n[SYSTEM] Session terminated. Stay safe, {user.Name}.");
-                }
-                else
-                {
-                    // STEP 4: Provide specific advice based on user selection
-                    bot.GiveAdvice(input);
-
-                    Console.WriteLine("\nPress any key to return to the menu...");
-                    Console.ReadKey(); // Wait for user so they can read the advice
-                }
-            }
+            //  Final Exit Message (After the loop inside StartConversation ends)
+            Console.WriteLine("\n[SYSTEM] Session terminated. Press any key to close the console...");
+            Console.ReadKey();
         }
     }
-} 
-//
+}
