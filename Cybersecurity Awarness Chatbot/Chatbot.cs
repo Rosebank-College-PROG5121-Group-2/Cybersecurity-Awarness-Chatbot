@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace CybersecurityChatbot
 {
@@ -9,29 +10,38 @@ namespace CybersecurityChatbot
         {
             bool keepRunning = true;
 
+            //  INTRO MESSAGE
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\nWelcome {user.Name} to the Cybersecurity Command Center!");
+            Thread.Sleep(600);
+            Console.WriteLine("You can type 'menu' to see options OR ask me anything about cybersecurity.");
+            Thread.Sleep(600);
+            Console.WriteLine("Example: 'Tell me about phishing' or 'How do I create a strong password?'");
+            Console.ResetColor();
+
             while (keepRunning)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("\nYou: ");
+                Console.Write("\nYou > ");
                 Console.ResetColor();
 
-                // .Trim() removes accidental spaces that cause "Invalid Selection" errors
                 string input = Console.ReadLine()?.ToLower().Trim();
 
+                // INPUT VALIDATION
                 if (string.IsNullOrWhiteSpace(input))
                 {
                     Console.WriteLine("Please enter something so I can assist you.");
                     continue;
                 }
 
-                //  HELP / MENU COMMAND
+                // HELP / MENU COMMAND
                 if (input.Contains("menu") || input.Contains("options") || input.Contains("help") || input.Contains("show"))
                 {
                     Console.WriteLine($"\nCertainly {user.Name}, here is the Cybersecurity Command Center menu:");
                     ShowSecurityMenu();
                 }
 
-                //  KEYWORD DETECTION (Priority logic)
+                // KEYWORD DETECTION
                 else if (input.Contains("phishing"))
                 {
                     GiveAdvice("2");
@@ -52,8 +62,20 @@ namespace CybersecurityChatbot
                 {
                     GiveAdvice("5");
                 }
+                else if (input.Contains("virus") || input.Contains("malware"))
+                {
+                    GiveAdvice("7");
+                }
+                else if (input.Contains("backup"))
+                {
+                    GiveAdvice("9");
+                }
+                else if (input.Contains("breach") || input.Contains("hacked"))
+                {
+                    GiveAdvice("10");
+                }
 
-                //  GREETINGS & PERSONALITY
+                // GREETINGS & PERSONALITY
                 else if (input.Contains("hello") || input.Contains("hi"))
                 {
                     Console.WriteLine($"Hello {user.Name}! How can I help you today?");
@@ -62,8 +84,12 @@ namespace CybersecurityChatbot
                 {
                     Console.WriteLine($"I'm doing great, {user.Name}! Ready to help you stay safe online.");
                 }
+                else if (input.Contains("thank"))
+                {
+                    Console.WriteLine("You're welcome! Stay safe online 😊");
+                }
 
-                //  NUMBER SUPPORT (Handles "7", "8", "9" etc.)
+                // NUMBER SUPPORT
                 else if (int.TryParse(input, out int choice))
                 {
                     if (choice == 0)
@@ -77,17 +103,18 @@ namespace CybersecurityChatbot
                     }
                 }
 
-                //  EXIT COMMANDS
-                else if (input.Contains("bye") || input.Contains("exit"))
+                // EXIT COMMANDS
+                else if (input.Contains("bye") || input.Contains("exit") || input.Contains("quit"))
                 {
                     Console.WriteLine($"Goodbye {user.Name}! Stay safe.");
                     keepRunning = false;
                 }
 
-                // 6. FALLBACK
+                // FALLBACK RESPONSE
                 else
                 {
-                    Console.WriteLine("I didn't quite catch that. Type 'menu' to see my topics, or ask about 'passwords'.");
+                    Console.WriteLine("I didn't quite understand that.");
+                    Console.WriteLine("Try asking about 'passwords', 'phishing', or type 'menu' to see all topics.");
                 }
             }
         }
@@ -100,22 +127,23 @@ namespace CybersecurityChatbot
 
             switch (choice)
             {
-                case "1": Console.WriteLine("Advice: Use a unique passphrase of at least 15 characters."); break;
-                case "2": Console.WriteLine("Advice: Hover over links to see the real URL before clicking."); break;
-                case "3": Console.WriteLine("Advice: Use Authenticator apps instead of SMS for 2FA."); break;
-                case "4": Console.WriteLine("Advice: Never log into bank accounts on public Wi-Fi."); break;
-                case "5": Console.WriteLine("Advice: Enable 'Auto-Update' to patch vulnerabilities."); break;
-                case "6": Console.WriteLine("Advice: Be wary of urgent requests for money or info."); break;
-                case "7": Console.WriteLine("Advice: Only download software from official, trusted sources."); break;
-                case "8": Console.WriteLine("Advice: Set up remote wipe capabilities for lost devices."); break;
-                case "9": Console.WriteLine("Advice: Use the 3-2-1 rule: 3 copies, 2 media, 1 offsite."); break;
-                case "10": Console.WriteLine("Advice: Disconnect and change all passwords immediately."); break;
-                default: Console.WriteLine("Invalid selection. Please choose a topic between 1 and 10."); break;
+                case "1": Console.WriteLine("Use a unique passphrase of at least 15 characters."); break;
+                case "2": Console.WriteLine("Hover over links to see the real URL before clicking."); break;
+                case "3": Console.WriteLine("Use Authenticator apps instead of SMS for 2FA."); break;
+                case "4": Console.WriteLine("Avoid logging into sensitive accounts on public Wi-Fi."); break;
+                case "5": Console.WriteLine("Enable auto-updates to patch security vulnerabilities."); break;
+                case "6": Console.WriteLine("Be cautious of urgent requests for money or sensitive info."); break;
+                case "7": Console.WriteLine("Install antivirus software and avoid suspicious downloads."); break;
+                case "8": Console.WriteLine("Enable device tracking and remote wipe for mobile security."); break;
+                case "9": Console.WriteLine("Follow the 3-2-1 backup rule: 3 copies, 2 media, 1 offsite."); break;
+                case "10": Console.WriteLine("Disconnect immediately and change all your passwords."); break;
+                default: Console.WriteLine("Invalid selection. Please choose between 1 and 10."); break;
             }
+
             Console.ResetColor();
         }
 
-        // UI ELEMENTS
+        // UI MENU
         public void ShowSecurityMenu()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -129,6 +157,7 @@ namespace CybersecurityChatbot
             Console.ResetColor();
         }
 
+        // ASCII LOGO
         public void DisplayLogo()
         {
             Console.Clear();
@@ -142,9 +171,10 @@ namespace CybersecurityChatbot
      \____|\__, |_.__/ \___|_|  |____/|_| |_|_|\___|_|\__,_|
            |___/                                             
 
-             [ C Y B E R  S E C U R I T Y  C O M M A N D  C E N T E R ]
+        [ C Y B E R  S E C U R I T Y  C O M M A N D  C E N T E R ]
     ================================================================
 ");
+            Console.ResetColor();
         }
     }
 }
