@@ -25,6 +25,6 @@ jobs:
     - name: Build project
       run: dotnet build --configuration Release --no-restore
 
-    # Adding this step shows the marker you care about code quality
+   
     - name: Test
       run: dotnet test --no-build --verbosity normal
