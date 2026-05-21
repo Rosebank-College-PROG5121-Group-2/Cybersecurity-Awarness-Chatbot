@@ -6,7 +6,7 @@ namespace CybersecurityChatbot
     //Stores and recalls information about the user during the conversation.
     // Handles name, favourite topic, and any other key-value pairs.
     
-    public class MemoryStore
+    public class MemoryStore 
     {
         // Stores the user's name
         public string UserName { get; set; } = string.Empty;
