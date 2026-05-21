@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace CybersecurityChatbot
 {
     public class Chatbot
     {
-        // MAIN CONVERSATIONAL LOOP
+        
         public void StartConversation(User user)
         {
             bool keepRunning = true;
 
-            //  INTRO MESSAGE
+        
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"\nWelcome {user.Name} to the Cybersecurity Command Center!");
             Thread.Sleep(600);
@@ -86,7 +87,7 @@ namespace CybersecurityChatbot
                 }
                 else if (input.Contains("thank"))
                 {
-                    Console.WriteLine("You're welcome! Stay safe online 😊");
+                    Console.WriteLine("You're welcome! Stay safe online :) ");
                 }
 
                 // NUMBER SUPPORT
@@ -175,6 +176,175 @@ namespace CybersecurityChatbot
     ================================================================
 ");
             Console.ResetColor();
+        }
+
+     
+        private KeywordResponder _keywords = new KeywordResponder();
+        private SentimentDetector _sentiment = new SentimentDetector();
+        private MemoryStore _memory = new MemoryStore();
+        private Random _random = new Random();
+
+        // Tracks whether we are still waiting for the user's name on first launch
+        private bool _awaitingName = true;
+
+        // Remembers the last matched keyword so "tell me more" can continue the topic
+        private string _lastTopic = string.Empty;
+
+   
+        // Returns the opening message shown in the GUI when the app launches.
+        // Called once by MainWindow in its constructor.
+
+        public string GetGreeting()
+        {
+            return "Hello! I'm CyberBot, your Cybersecurity Awareness Assistant.\n" +
+                   "I'm here to help you stay safe online.\n\n" +
+                   "Before we start — what's your name?";
+        }
+
+      
+        /// The main method called by the GUI every time the user sends a message
+      public string ProcessInput(string userInput)
+        {
+           
+            if (string.IsNullOrWhiteSpace(userInput))
+                return "Please type a message before sending.";
+
+            string input = userInput.Trim();
+            string lowerInput = input.ToLower();
+
+            //   Waiting for name 
+            if (_awaitingName)
+            {
+                _memory.UserName = CapitaliseName(input);
+                _awaitingName = false;
+
+                return $"Great to meet you, {_memory.UserName}! :)\n\n" +
+                       $"I can help you with passwords, phishing, privacy, scams, malware and more.\n\n" +
+                       $"What would you like to know about today?";
+            }
+
+            //  Special commands 
+            if (lowerInput.Contains("what can you do") || lowerInput.Contains("help") ||
+                lowerInput.Contains("menu") || lowerInput.Contains("topics"))
+            {
+                return GetTopicsList();
+            }
+
+            if (lowerInput.Contains("how are you"))
+                return $"I'm doing great{GetNameSuffix()}! Ready to help you stay safe online.";
+
+            if (lowerInput.Contains("purpose") || lowerInput.Contains("what are you"))
+                return "My purpose is to help you stay safe online by providing cybersecurity tips and guidance.";
+
+            //  Follow-up phrases 
+            if (IsFollowUp(lowerInput))
+            {
+                if (!string.IsNullOrEmpty(_lastTopic))
+                    return $"Sure{GetNameSuffix()}, here's more on {_lastTopic}:\n\n" +
+                           _keywords.GetResponseForTopic(_lastTopic);
+                else
+                    return "I'm not sure what topic to continue. Could you ask me about something specific first?";
+            }
+
+            //  User sharing their interest 
+            if (lowerInput.Contains("interested in") || lowerInput.Contains("i like"))
+            {
+                string matchedKeyword = _keywords.GetMatchedKeyword(input);
+                if (matchedKeyword != null)
+                {
+                    _memory.FavouriteTopic = matchedKeyword;
+                    return $"Great{GetNameSuffix()}! I'll remember that you're interested in {matchedKeyword}.\n\n" +
+                           _keywords.GetResponseForTopic(matchedKeyword);
+                }
+            }
+
+            //  Sentiment detection 
+            Sentiment detectedSentiment = _sentiment.Detect(input);
+            string sentimentOpener = _sentiment.GetSentimentResponse(detectedSentiment);
+
+            //  Keyword recognition
+            string keywordResponse = _keywords.GetResponse(input);
+            if (keywordResponse != null)
+            {
+                _lastTopic = _keywords.GetMatchedKeyword(input);
+
+                string personalisedOpener = _memory.GetPersonalisedOpener();
+                string fullResponse = string.Empty;
+
+                if (!string.IsNullOrEmpty(sentimentOpener))
+                    fullResponse += sentimentOpener + "\n\n";
+
+                if (!string.IsNullOrEmpty(personalisedOpener))
+                    fullResponse += personalisedOpener + "\n\n";
+
+                fullResponse += keywordResponse;
+                fullResponse += $"\n\nSay 'tell me more' for another tip on {_lastTopic}.";
+
+                return fullResponse;
+            }
+
+            // ── STEP 7: Sentiment but no keyword ─────────────────────────────
+            // User expressed emotion but didn't mention a specific topic
+            if (detectedSentiment != Sentiment.Neutral)
+            {
+                return sentimentOpener +
+                       $"\n\nI want to help{GetNameSuffix()}. What cybersecurity topic are you concerned about?";
+            }
+
+            // ── STEP 8: Fallback ──────────────────────────────────────────────
+            return $"I didn't quite understand that{GetNameSuffix()}. " +
+                   $"Try asking about passwords, phishing, or type 'help' to see all topics.";
+        }
+
+        // ── Part 2 Private Helper Methods ─────────────────────────────────────
+
+       
+        /// Returns true if the input is a follow-up phrase like "tell me more".
+       
+        private bool IsFollowUp(string lowerInput)
+        {
+            string[] phrases = { "tell me more", "explain more", "more info",
+                                  "another tip",  "more details",  "continue", "go on" };
+            foreach (string phrase in phrases)
+                if (lowerInput.Contains(phrase)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Returns ", [Name]" if we know the user's name, otherwise empty string.
+        /// Used to personalise responses naturally mid-sentence.
+        /// </summary>
+        private string GetNameSuffix()
+        {
+            return _memory.HasName() ? $", {_memory.UserName}" : string.Empty;
+        }
+
+        /// <summary>
+        /// Capitalises the first letter of each word in the user's name.
+        /// e.g. "sipho dlamini" becomes "Sipho Dlamini"
+        /// </summary>
+        private string CapitaliseName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return name;
+            string[] words = name.Trim().Split(' ');
+            for (int i = 0; i < words.Length; i++)
+                if (words[i].Length > 0)
+                    words[i] = char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
+            return string.Join(" ", words);
+        }
+
+        /// <summary>
+        /// Builds a response listing all topics the bot can help with.
+        /// Called when the user types "help", "menu", or "what can you do".
+        /// </summary>
+        private string GetTopicsList()
+        {
+            return $"Here's what I can help you with{GetNameSuffix()}:\n\n" +
+                   " Topics: passwords, phishing, privacy, scams, malware, " +
+                   "ransomware, vpn, firewall, two factor, social engineering\n\n" +
+                   "• Say 'tell me more' for another tip on the current topic\n" +
+                   "• Tell me what you're interested in and I'll remember it\n" +
+                   "• Ask 'how are you' or 'what is your purpose'";
         }
     }
 }
