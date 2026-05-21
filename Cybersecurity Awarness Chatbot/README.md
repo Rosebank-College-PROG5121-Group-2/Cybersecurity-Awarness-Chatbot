@@ -29,3 +29,11 @@ User.cs: Handles user profile data and identity persistence.
 
 AudioPlayer.cs: Manages multimedia assets and error handling for audio playback.
 Updated the Cyber Shield logo, some letters werent descriptive 
+## Part 2 Features
+- WPF GUI with dark cybersecurity theme
+- Keyword recognition for 10 cybersecurity topics
+- Random responses per keyword
+- Sentiment detection 
+- Memory and recall 
+- Conversation flow 
+- Voice greeting on launch
