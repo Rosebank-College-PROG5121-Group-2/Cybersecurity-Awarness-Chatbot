@@ -283,7 +283,7 @@ namespace CybersecurityChatbot
                 return fullResponse;
             }
 
-            // ── STEP 7: Sentiment but no keyword ─────────────────────────────
+            // Sentiment but no keyword 
             // User expressed emotion but didn't mention a specific topic
             if (detectedSentiment != Sentiment.Neutral)
             {
@@ -291,12 +291,12 @@ namespace CybersecurityChatbot
                        $"\n\nI want to help{GetNameSuffix()}. What cybersecurity topic are you concerned about?";
             }
 
-            // ── STEP 8: Fallback ──────────────────────────────────────────────
+            // Fallback 
             return $"I didn't quite understand that{GetNameSuffix()}. " +
                    $"Try asking about passwords, phishing, or type 'help' to see all topics.";
         }
 
-        // ── Part 2 Private Helper Methods ─────────────────────────────────────
+        // Private Helper Methods 
 
        
         /// Returns true if the input is a follow-up phrase like "tell me more".
@@ -310,20 +310,18 @@ namespace CybersecurityChatbot
             return false;
         }
 
-        /// <summary>
-        /// Returns ", [Name]" if we know the user's name, otherwise empty string.
-        /// Used to personalise responses naturally mid-sentence.
-        /// </summary>
+        
+        //Returns Name if we know the user's name, otherwise empty string.
+        // Used to personalise responses naturally mid-sentence.
+        
         private string GetNameSuffix()
         {
             return _memory.HasName() ? $", {_memory.UserName}" : string.Empty;
         }
 
-        /// <summary>
-        /// Capitalises the first letter of each word in the user's name.
-        /// e.g. "sipho dlamini" becomes "Sipho Dlamini"
-        /// </summary>
-        private string CapitaliseName(string name)
+        
+        // Capitalises the first letter of each word in the user's name.
+         private string CapitaliseName(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return name;
             string[] words = name.Trim().Split(' ');
@@ -333,10 +331,8 @@ namespace CybersecurityChatbot
             return string.Join(" ", words);
         }
 
-        /// <summary>
-        /// Builds a response listing all topics the bot can help with.
-        /// Called when the user types "help", "menu", or "what can you do".
-        /// </summary>
+       
+        // Builds a response listing all topics the bot can help with.
         private string GetTopicsList()
         {
             return $"Here's what I can help you with{GetNameSuffix()}:\n\n" +
