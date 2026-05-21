@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CybersecurityChatbot
+namespace CybersecurityChatbot 
 {
     
     // Detects the emotional tone of the user's message and returns
