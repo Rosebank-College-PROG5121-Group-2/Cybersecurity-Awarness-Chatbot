@@ -37,3 +37,7 @@ Updated the Cyber Shield logo, some letters werent descriptive
 - Memory and recall 
 - Conversation flow 
 - Voice greeting on launch
+ YOUTUBE LINK:
+ https://youtu.be/W1Hv_RkHBKI
+ ## GitHub Actions CI
+![CI Green Tick](ci-screenshot.png)

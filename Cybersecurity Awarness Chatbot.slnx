@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../../../Desktop/Screenshot (948).png" />
+  </Folder>
   <Project Path="Cybersecurity Awarness Chatbot/Cybersecurity Awarness Chatbot.csproj" />
   <Project Path="CybersecurityChatbotGUI/CybersecurityChatbotGUI.csproj" Id="26681d53-000c-4849-b99a-6a2758905382" />
 </Solution>

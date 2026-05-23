@@ -11,7 +11,7 @@ namespace CybersecurityChatbotGUI
 {
     public partial class MainWindow : Window
     {
-        // The only field we need — one instance of the Chatbot class
+       
         private Chatbot _chatBot;
     public MainWindow()
         {
@@ -20,7 +20,7 @@ namespace CybersecurityChatbotGUI
             // Create the chatbot instance
             _chatBot = new Chatbot();
 
-            // Play the voice greeting from Part 1
+            // Play the voice greeting 
             PlayVoiceGreeting();
 
             // Show the opening message from the bot
