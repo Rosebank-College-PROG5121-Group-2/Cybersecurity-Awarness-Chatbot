@@ -199,7 +199,7 @@ namespace CybersecurityChatbot
                 return responseList[randomIndex];
             }
 
-            // Topic not found — return a fallback message
+            // Topic not found return a fallback message
             return "I don't have specific information on that topic yet, but always stay cautious online!";
         }
 
