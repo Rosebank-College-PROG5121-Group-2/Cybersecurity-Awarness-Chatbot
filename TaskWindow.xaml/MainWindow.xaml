@@ -1,0 +1,32 @@
+﻿<Grid Margin="10">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <TextBox x:Name="txtTaskTitle"
+             Grid.Row="0"
+             Margin="5"/>
+
+    <TextBox x:Name="txtTaskDescription"
+             Grid.Row="1"
+             Margin="5"/>
+
+    <TextBox x:Name="txtReminder"
+             Grid.Row="2"
+             Margin="5"/>
+
+    <ListBox x:Name="lstTasks"
+             Grid.Row="3"
+             Margin="5"/>
+
+    <Button x:Name="btnAddTask"
+            Content="Add Task"
+            Grid.Row="4"
+            Margin="5"
+            Click="btnAddTask_Click"/>
+</Grid>
