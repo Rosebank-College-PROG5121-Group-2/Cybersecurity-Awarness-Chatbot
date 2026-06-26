@@ -9,7 +9,6 @@ namespace CybersecurityChatbotGUI
         private TaskManager taskManager;
         private ActivityLogger logger = new ActivityLogger(); // Initialized the logger instance
 
-        
         public ObservableCollection<CyberTask> CyberTasks { get; set; }
 
         public TaskWindow()
@@ -20,11 +19,12 @@ namespace CybersecurityChatbotGUI
 
             CyberTasks = new ObservableCollection<CyberTask>(taskManager.GetAllTasks());
 
-            
             lstTasks.ItemsSource = CyberTasks;
         }
 
-        // CREATE TASK
+        // =========================================================================
+        // CREATE TASK: INITIALIZE CYBERSECURITY OBJECTIVE
+        // =========================================================================
         private void btnAddTask_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtTaskTitle.Text))
@@ -53,15 +53,17 @@ namespace CybersecurityChatbotGUI
             MessageBox.Show("Task added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        // COMPLETE TASK
-        private void btnCompleteTask_Click(object sender, RoutedEventArgs e)
+        // =========================================================================
+        // COMPLETE TASK: RESOLVE OBJECTIVE
+        // =========================================================================
+        private void btnMarkComplete_Click(object sender, RoutedEventArgs e)
         {
             // Check if the user has selected an item from the ListBox
             if (lstTasks.SelectedItem is CyberTask selectedTask)
             {
                 taskManager.MarkAsComplete(selectedTask.Id);
 
-                //  Record that the task was completed
+                // Record that the task was completed
                 logger.LogAction($"Marked task as complete: '{selectedTask.Title}'");
 
                 // Sync the UI collection with the updated storage file
@@ -82,14 +84,16 @@ namespace CybersecurityChatbotGUI
             }
         }
 
-        // DELETE TASK 
+        // =========================================================================
+        // DELETE TASK: PURGE LOG DATA
+        // =========================================================================
         private void btnDeleteTask_Click(object sender, RoutedEventArgs e)
         {
             if (lstTasks.SelectedItem is CyberTask selectedTask)
             {
                 taskManager.DeleteTask(selectedTask.Id);
 
-                //  Record the task deletion event
+                // Record the task deletion event
                 logger.LogAction($"Deleted task: '{selectedTask.Title}'");
 
                 // Remove from the bound visual list collection
@@ -101,11 +105,6 @@ namespace CybersecurityChatbotGUI
             {
                 MessageBox.Show("Please select a task from the list to delete.", "Selection Required", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-        }
-
-        private void btnMarkComplete_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

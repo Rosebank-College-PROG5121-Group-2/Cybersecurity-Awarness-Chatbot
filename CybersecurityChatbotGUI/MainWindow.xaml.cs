@@ -1,11 +1,12 @@
 ﻿// MainWindow.xaml.cs Connects the WPF GUI to the Chatbot logic
+using CybersecurityChatbot;
 using System;
 using System.Media;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using CybersecurityChatbot;
 
 namespace CybersecurityChatbotGUI
 {
@@ -17,12 +18,18 @@ namespace CybersecurityChatbotGUI
         private QuizManager quizManager = new QuizManager();
         private bool isQuizActive = false;
 
+        //  Global Logger instance initialized for the entire window context
+        private ActivityLogger logger = new ActivityLogger();
+
         public MainWindow()
         {
             InitializeComponent();
 
             // Create the chatbot instance
             _chatBot = new Chatbot();
+
+            // Record system initialization event
+            logger.LogAction("CyberShield Core Application Subsystems Successfully Mounted.");
 
             // Play the voice greeting 
             PlayVoiceGreeting();
@@ -44,11 +51,17 @@ namespace CybersecurityChatbotGUI
                 {
                     SoundPlayer player = new SoundPlayer(wavPath);
                     player.Play();
+                    logger.LogAction("Voice Synthesis System successfully initialized greeting file.");
+                }
+                else
+                {
+                    logger.LogAction($"Warning: Voice asset missing at path: {wavPath}");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Silently continue if audio fails — app still works
+                // Silently continue if audio fails — record anomaly details to the telemetry pipeline
+                logger.LogAction($"Audio Interface Exception caught: {ex.Message}");
             }
         }
 
@@ -94,6 +107,8 @@ namespace CybersecurityChatbotGUI
                     isQuizActive = true;
                     quizManager.ResetQuiz();
 
+                    logger.LogAction("State Modification: User triggered Quiz Mode evaluation sequence via NLP intent.");
+
                     string initialMessage = "🎮 Cybersecurity Quiz Started!\n" +
                                            "Answer by typing the number of your option (1, 2, 3, or 4).\n\n" +
                                            FormatQuestionOutput();
@@ -105,6 +120,7 @@ namespace CybersecurityChatbotGUI
                     // Fall back to regular chatbot processing from Part 2
                     string response = _chatBot.ProcessInput(userInput);
                     AppendBotMessage(response);
+                    logger.LogAction($"Processed chatbot terminal entry query string: '{userInput}'");
                 }
             }
             // 2. STATE CHECK: The user is currently participating in the active quiz
@@ -114,6 +130,8 @@ namespace CybersecurityChatbotGUI
                 {
                     // Convert 1-based user menu input to 0-based array index
                     bool isCorrect = quizManager.SubmitAnswer(choice - 1, out string explanation);
+
+                    logger.LogAction($"Quiz Evaluation: Submitted option answer index [{choice}] for Question {quizManager.CurrentQuestionNumber}. Result Correct: {isCorrect}");
 
                     string feedback = isCorrect ? "✅ Correct!\n" : "❌ Incorrect.\n";
                     feedback += $"💡 Explanation: {explanation}\n\n";
@@ -134,12 +152,14 @@ namespace CybersecurityChatbotGUI
                             feedback += "⚠️ Good effort, but consider reviewing core safety habits.";
 
                         AppendBotMessage(feedback);
+                        logger.LogAction($"Quiz Finalized: User recorded an final score matrix of {quizManager.Score}/{quizManager.TotalQuestions}.");
                         isQuizActive = false; // Gracefully return to chatbot mode
                     }
                 }
                 else
                 {
                     AppendBotMessage("⚠️ Invalid input. Please enter a valid number between 1 and 4 to pick an option.");
+                    logger.LogAction($"Quiz Parsing Exception: Invalid selection string parsed while in evaluation loop.");
                 }
             }
 
@@ -249,6 +269,36 @@ namespace CybersecurityChatbotGUI
         {
             TaskWindow taskWindow = new TaskWindow();
             taskWindow.Show();
+            logger.LogAction("User initialized standalone Task Assistant sub-window framework.");
+        }
+
+        private void btnViewLogs_Click(object sender, RoutedEventArgs e)
+        {
+            var logEntries = logger.GetLogs();
+
+            if (logEntries != null && logEntries.Count > 0)
+            {
+                StringBuilder auditTrailLog = new StringBuilder();
+
+                foreach (LogEntry entry in logEntries)
+                {
+                    auditTrailLog.AppendLine($"[{entry.Timestamp}] {entry.ActionText}");
+                }
+
+                MessageBox.Show(
+                    auditTrailLog.ToString(),
+                    "CyberShield Telemetry Audit Trail Logs",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    "No baseline background session actions recorded yet.",
+                    "System Log Status",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
         }
     }
 }

@@ -13,5 +13,9 @@
         public bool IsComplete { get; set; }
 
         public string CreatedAt { get; set; }
+
+        
+     
+        public string Status => IsComplete ? "RESOLVED (COMPLETED)" : "PENDING (ACTIVE)";
     }
 }

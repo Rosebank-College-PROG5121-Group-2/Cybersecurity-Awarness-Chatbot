@@ -120,18 +120,29 @@
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
+            <!-- TASKS ASSISTANT TRIGGER BUTTON -->
             <Button Content="TASKS ASSISTANT"
                     Grid.Column="0"
                     Style="{StaticResource TerminalButtonStyle}"
                     Click="btnTasks_Click"
                     Margin="0,0,10,0"/>
 
+            <!-- AUDIT TRAIL LOG TRIGGER BUTTON -->
+            <Button x:Name="btnViewLogs"
+                    Content="📋 VIEW AUDIT TRAIL"
+                    Grid.Column="1"
+                    Style="{StaticResource TerminalButtonStyle}"
+                    Click="btnViewLogs_Click"
+                    Margin="0,0,10,0"/>
+
+            <!-- MAIN TEXT INPUT CORE -->
             <TextBox x:Name="UserInput"
-                     Grid.Column="1"
+                     Grid.Column="2"
                      Background="#0D131C"
                      Foreground="White"
                      CaretBrush="#00FF41"
@@ -144,12 +155,14 @@
                      VerticalContentAlignment="Center"
                      KeyDown="UserInput_KeyDown"/>
 
+            <!-- CONVERSATION TRANSMIT BUTTON -->
             <Button x:Name="SendButton"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Content="Send"
                     Style="{StaticResource TerminalButtonStyle}"
                     Padding="25,10"
                     Click="SendButton_Click"/>
+            
         </Grid>
     </Grid>
 </Window>
